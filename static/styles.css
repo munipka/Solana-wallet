@@ -1,0 +1,135 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Verdana, sans-serif;
+}
+
+
+:root {
+    --body-background-color: white;
+    --title-color: black;
+    --sub-text-color: black;
+    --info-color: green;
+}
+
+body {
+    background-color: var(--body-background-color);
+}
+
+button {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+input.text {
+    margin-top: 10px;
+    width:  200px;
+    height: 50px;
+    padding: 5px 10px 5px 10px;
+    border:1px solid #999;
+    font-size:16px;
+}
+.title {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 25px;
+    color: var(--title-color);
+}
+
+.title_second {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--title-color);
+}
+
+.title_info{
+    margin-top: 20px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--info-color);
+}
+
+
+
+.receipt {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-color: var(--body-background-color);
+    transition: transform .3s;
+}
+
+.receipt.active {
+    transform: translateX(0);
+}
+
+.receipt .title {
+    text-align: unset;
+    font-weight: 700;
+}
+
+.receipt__total {
+    margin-top: 20px;
+    width: 85%;
+    margin: 5px auto 0 auto;
+    color: var(--sub-text-color);
+    font-weight: 700;
+}
+
+.receipt__total-price.fluctuate {
+    animation: fluctuate .3s alternate 1 .3s;
+}
+
+.receipt-title-wrapper {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    width: 85%;
+    margin: 10px auto;
+}
+
+.receipt__further {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    border: none;
+    background-color: #12a662;
+    border-radius: 5px;
+    padding: 20px 70px;
+    color: white;
+    outline: none;
+    font-weight: 700;
+}
+
+.confirm {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    border: none;
+    background-color: #12a662;
+    border-radius: 5px;
+    padding: 20px 40px;
+    color: white;
+    outline: none;
+    font-weight: 700;
+}
+
+.clear {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    border: none;
+    background-color: #FF0000;
+    border-radius: 5px;
+    padding: 20px 40px;
+    color: white;
+    outline: none;
+    font-weight: 700;
+}
+
