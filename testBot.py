@@ -10,7 +10,7 @@ from handlersTEst.SendRegister import register_state_callbacks
 from aiohttp import web
 from webApp.web_app import routes as webapp_routes
 
-bot = Bot(token="2200317058:AAHKirXhfogRoa7CyYnuVg09DrBIH6xk8ss")
+bot = Bot(token="token")
 
 
 async def main():
