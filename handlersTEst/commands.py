@@ -53,3 +53,4 @@ def register_commands(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands="start")
     dp.register_message_handler(wallet, commands='wallet')
     dp.register_message_handler(faucet, commands='faucet')
+

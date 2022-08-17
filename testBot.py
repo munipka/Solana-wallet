@@ -16,6 +16,8 @@ import config
 bot = Bot(token=config.BOT_TOKEN)
 
 
+
+
 async def main():
     dp = Dispatcher(bot, storage=MemoryStorage())
     logging.basicConfig(
@@ -26,7 +28,7 @@ async def main():
     register_commands(dp)
     register_callbacks(dp)
     register_state_callbacks(dp)
-
+    
     await dp.start_polling(bot)
 
 
