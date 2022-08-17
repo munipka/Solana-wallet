@@ -1,5 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from SImpleTest.common import cb_menu
+from common import cb_menu
 
 
 def create_button():

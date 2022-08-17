@@ -1,8 +1,8 @@
 from aiogram import Dispatcher, types
 
-from SImpleTest.database import user_check
-from SImpleTest.keyboard import menu, create_button, faucet_button
-from SImpleTest.wallet import get_balance
+from database import user_check
+from keyboard import menu, create_button, faucet_button
+from wallet import get_balance
 
 
 async def cmd_start(message: types.Message):

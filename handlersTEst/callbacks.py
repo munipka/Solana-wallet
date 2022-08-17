@@ -1,17 +1,17 @@
 from aiogram import types, Dispatcher
 from aiogram.types import InputFile
 
-from SImpleTest.common import cb_menu
-from SImpleTest.database import user_check, add_user, get_history
-from SImpleTest.qrcodes import make_qrcode
-from SImpleTest.wallet import get_balance, fund_account, create_wallet
-from SImpleTest.keyboard import go_to_wallet, create_button, menu, receive_menu, send_menu
+from common import cb_menu
+from database import user_check, add_user, get_history
+from qrcodes import make_qrcode
+from wallet import get_balance, fund_account, create_wallet
+from keyboard import go_to_wallet, create_button, menu, receive_menu, send_menu
 
 
 async def message_create_wallet(call: types.CallbackQuery):
     """creates a wallet for a new user"""
     try:
-        new_wallet = create_wallet(call.message.from_user.id)
+        new_wallet = create_wallet(call.from_user.id)
         await call.message.edit_text(text=f'Кошелек создан, Ваш адрес: `{new_wallet}` ',
                                      parse_mode='MarkdownV2',
                                      reply_markup=go_to_wallet())
@@ -24,7 +24,7 @@ async def message_create_wallet(call: types.CallbackQuery):
 async def wallet(call: types.CallbackQuery):
     """launch a wallet, but from a call"""
     try:
-        if user_check(call.message.from_user.id) is False:
+        if user_check(call.from_user.id) is False:
             await call.message.answer('У вас еще нет активного кошелька. Нажмите на кнопку, чтобы создать',
                                       reply_markup=create_button())
         else:
@@ -115,7 +115,7 @@ async def show_history(call: types.CallbackQuery):
                                                 callback_data=cb_menu.new(action='wallet')))
         text = '*Последние 5 отправленных Вами транзакций*\n'
         for item in data:
-            text += '\n*Адрес:* ' + '`' + item[0] + '`'
+            text += '\n*Получатель:* ' + '`' + '@'+ item[0] + '`'
             text += '\n*Количество:* ' + str(item[1]) + ' SOL'
             text += '\n*ID транзакции:* ' + '`' + item[2] + '`'
             text += '\n\n '

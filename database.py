@@ -1,6 +1,6 @@
 
-from SImpleTest import config
-from SImpleTest.DBcm import UseDatabase
+import config
+from DBcm import UseDatabase
 
 dbname = config.DATABASE_NAME
 
@@ -16,7 +16,7 @@ def create_table():
 
 def user_check(user_id):
     with UseDatabase(dbname) as cursor:
-        _SQL = """SELECT* FROM users WHERE user_id=?"""
+        _SQL = """SELECT* FROM users WHERE user_id=?;"""
         cursor.execute(_SQL, (user_id,))
         res = cursor.fetchone()
         if res is None:
@@ -50,9 +50,17 @@ def get_history(user_id):
         return content
 
 
-def show_smt():
+def save_address(user_id, address):
     with UseDatabase(dbname) as cursor:
-        _SQL = """SELECT * FROM saved_addresses"""
-        cursor.execute(_SQL)
-        res = cursor.fetchall()
-        print(res)
+        _SQL = """INSERT INTO addresses (user_id, address)
+        VALUES(?, ?);"""
+        cursor.execute(_SQL, (user_id, address))
+
+
+def select_address(user_id):
+    with UseDatabase(dbname) as cursor:
+        _SQL = """SELECT address FROM addresses
+        WHERE user_id=?;"""
+        cursor.execute(_SQL, (user_id,))
+        res = cursor.fetchone()
+        return res

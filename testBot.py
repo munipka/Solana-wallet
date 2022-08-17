@@ -9,8 +9,11 @@ from handlersTEst.SendRegister import register_state_callbacks
 
 from aiohttp import web
 from webApp.web_app import routes as webapp_routes
+from webApp.web_app import setup_template_routes
 
-bot = Bot(token="token")
+import config
+
+bot = Bot(token=config.BOT_TOKEN)
 
 
 async def main():
@@ -30,4 +33,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
