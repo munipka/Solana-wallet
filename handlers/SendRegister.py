@@ -1,3 +1,5 @@
+"""this module handles sending process"""
+
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -17,7 +19,6 @@ class SetReceiver(StatesGroup):
 
 async def set_receiver_start(call: types.CallbackQuery):
     try:
-
         text = '*Внимание\!*⚠ \nПожалуйста, убедитесь, что адрес получателя *SOL* в сети *SPL*\!⚠ \n'
         text += 'Иначе, Вы можете *потерять* свои средства\n'
         text += '*Введите адрес получателя или пришлите фотографию QR\-кода:* '
@@ -33,7 +34,7 @@ async def address_set(message, state: FSMContext):
     try:
         await state.update_data(address_set=message.text)
 
-        data = get_balance(message.from_user.id)
+        data = await get_balance(message.from_user.id)
         balance = data['balance']
         text = f'Ваш текущий баланс: {balance}\nВведите сумму в SOL: '
 
@@ -52,7 +53,7 @@ async def address_set_photo(message, state: FSMContext):
 
         await state.update_data(address_set=address_from_qr)
 
-        data = get_balance(message.from_user.id)
+        data = await get_balance(message.from_user.id)
         balance = data['balance']
         text = f'Адрес отправления: {address_from_qr}\n'
         text += f'Ваш текущий баланс: {balance}\nВведите сумму в SOL: '
@@ -91,7 +92,7 @@ async def set_receiver_sure(call, state: FSMContext):
         await call.message.edit_text(text='Подождите...')
         amount = user_data['amount']
         receiver = user_data['address_set']
-        transaction = send_sol(call.from_user.id, amount, receiver)
+        transaction = await send_sol(call.from_user.id, amount, receiver)
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(types.InlineKeyboardButton(text="История транзакций",
                                                 callback_data=cb_menu.new(action='history')),
@@ -102,7 +103,7 @@ async def set_receiver_sure(call, state: FSMContext):
             result = f'✅ Успешно\! \n\n ID транзакции\: `{transaction}`\n\n'
             result += 'Можете посмотреть историю отправленных транзакций, нажав на кнопку ниже\.'
             date = call.message.date
-            save_history(call.from_user.id, receiver, amount, transaction, date)
+            await save_history(call.from_user.id, receiver, amount, transaction, date)
             await call.message.edit_text(text=result,
                                          parse_mode="MarkdownV2",
                                          reply_markup=keyboard)

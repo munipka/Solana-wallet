@@ -6,30 +6,20 @@ from wallet import get_balance
 
 
 async def cmd_start(message: types.Message):
+    """welcome message handler"""
     hello_msg = 'Привет!\nСписок команд для бота:\n'
     hello_msg += 'Это тестовый бот, блабла'
-    markup = types.InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                types.InlineKeyboardButton(
-                    text="Check",
-                    web_app=types.WebAppInfo(url=f'http://65.108.147.234:8001'),
-                )
-            ]
-        ]
-    )
-    await message.answer("Press the button!", reply_markup=markup)
     await message.answer(text=hello_msg)
 
 
 async def wallet(message: types.Message):
     """launch a wallet"""
     try:
-        if user_check(message.from_user.id) is False:
+        if await user_check(message.from_user.id) is False:
             await message.answer('У вас еще нет активного кошелька. Нажмите на кнопку, чтобы создать',
                                  reply_markup=create_button())
         else:
-            data = get_balance(message.from_user.id)
+            data = await get_balance(message.from_user.id)
             public_key = data['publicKey']
             balance = data['balance']
             try:
@@ -50,7 +40,8 @@ async def faucet(message: types.Message):
 
 
 def register_commands(dp: Dispatcher):
-    dp.register_message_handler(cmd_start, commands="start")
+    dp.register_message_handler(cmd_start, commands=["start", 'help'])
     dp.register_message_handler(wallet, commands='wallet')
     dp.register_message_handler(faucet, commands='faucet')
+    dp.register_message_handler(cmd_start, content_types=['text'])
 

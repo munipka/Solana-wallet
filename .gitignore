@@ -1,2 +1,4 @@
 __pycache__/
-/users/
+*.pyc
+.idea/
+/venv

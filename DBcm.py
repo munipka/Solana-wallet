@@ -1,3 +1,5 @@
+"""context manager for database"""
+
 import aiosqlite
 
 
