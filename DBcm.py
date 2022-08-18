@@ -1,4 +1,4 @@
-import sqlite3
+import aiosqlite
 
 
 class UseDatabase:
@@ -6,12 +6,12 @@ class UseDatabase:
     def __init__(self, dbpath: str):
         self.path = dbpath
 
-    def __enter__(self) -> 'cursor':
-        self.conn = sqlite3.connect(self.path)
-        self.cursor = self.conn.cursor()
+    async def __aenter__(self) -> 'cursor':
+        self.conn = await aiosqlite.connect(self.path)
+        self.cursor = await self.conn.cursor()
         return self.cursor
 
-    def __exit__(self, ecx_type, exc_value, exc_trace):
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
+    async def __aexit__(self, ecx_type, exc_value, exc_trace):
+        await self.conn.commit()
+        await self.cursor.close()
+        await self.conn.close()

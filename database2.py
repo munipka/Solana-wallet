@@ -2,11 +2,10 @@ import config
 import asyncio
 from DBcm import UseDatabase
 
-dbname = config.DATABASE_NAME
+#dbname = config.DATABASE_NAME
+dbname = 'database/test.db'
 
-
-async def create_tables():
-    """create tables"""
+async def create_table():
     async with UseDatabase(dbname) as cursor:
         _SQL = """CREATE TABLE IF NOT EXISTS users(
         user_id INTEGER 
@@ -44,7 +43,6 @@ async def create_tables():
         await cursor.execute(_SQL)
 
 async def save_wallet_keys(user_id, public, secret):
-    """saves access keys"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO wallets (user_id, public, secret)
         VALUES(?, ?, ?);"""
@@ -52,7 +50,6 @@ async def save_wallet_keys(user_id, public, secret):
         
         
 async def load_wallet_keys(user_id):
-    """load a wallet by using a secret key"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """SELECT secret FROM wallets 
         WHERE user_id =?; """
@@ -62,7 +59,6 @@ async def load_wallet_keys(user_id):
               
 
 async def user_check(user_id):
-    """checks is ID is in a DB"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """SELECT* FROM users WHERE user_id=?;"""
         await cursor.execute(_SQL, (user_id,))
@@ -73,7 +69,6 @@ async def user_check(user_id):
             return True
 
 async def add_user(user_id):
-    """adds user to DB"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO users (user_id)
         VAlUES (?);"""
@@ -81,7 +76,6 @@ async def add_user(user_id):
 
 
 async def save_history(user_id, address, amount, transaction, date):
-    """saves transaction history"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO history (user_id, address, amount, trans, date) 
          VALUES(?, ?, ?, ?, ?);"""
@@ -90,7 +84,6 @@ async def save_history(user_id, address, amount, transaction, date):
 
 
 async def get_history(user_id):
-    """loads transactions history"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """SELECT address, amount, trans FROM history
         WHERE user_id = ?
@@ -100,7 +93,6 @@ async def get_history(user_id):
         return content
 
 async def save_address(user_id, address):
-    """saves user`s wallet`s address"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO addresses (user_id, address)
         VALUES(?, ?);"""
@@ -108,7 +100,6 @@ async def save_address(user_id, address):
 
         
 async def select_address(user_id):
-    """loads user`s address"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """SELECT address FROM addresses
         WHERE user_id=?;"""
@@ -116,3 +107,6 @@ async def select_address(user_id):
         res = await cursor.fetchone()
         return res
         
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(create_table())

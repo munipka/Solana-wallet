@@ -4,7 +4,7 @@ from solana.rpc.api import Client
 from solana.transaction import Transaction
 from solana.system_program import TransferParams, transfer
 
-from database import save_address
+from database import save_wallet_keys, save_address
 
 import json
 
