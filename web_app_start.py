@@ -1,11 +1,9 @@
 import aiohttp
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 import config
-
 
 from aiohttp import web
 from webApp.web_app import routes as webapp_routes
-from webApp.web_app import setup_template_routes
 
 bot = Bot(config.BOT_TOKEN)
 
@@ -15,7 +13,6 @@ async def webapp():
     app["bot"] = bot
     app.add_routes(webapp_routes)
     app.router.add_static(prefix='/static', path='static')
-    setup_template_routes(app)
 
     return app
 

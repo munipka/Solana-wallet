@@ -1,56 +1,54 @@
+import json
+
 from solana.keypair import Keypair
 from solana.publickey import PublicKey
 from solana.rpc.api import Client
-from solana.transaction import Transaction
 from solana.system_program import TransferParams, transfer
-
-from database import save_wallet_keys, save_address
-
-import json
+from solana.transaction import Transaction
 
 import config
+from database import save_wallet_keys, save_address, load_wallet_keys
 
 solana_client = Client(config.SOLANA_CLIENT)
 
 
-def create_wallet(user_id):
+async def create_wallet(user_id):
+    """creates a wallet in blockchain"""
     try:
         kp = Keypair.generate()
         public_key = str(kp.public_key)
         secret_key = kp.secret_key.decode('latin-1')
 
         data = {
-            'public_key': public_key,
-            'secret_key': secret_key,
+            "public_key": public_key,
+            "secret_key": secret_key,
         }
-        
-        save_address(user_id, public_key)
-        file_name = f'users/{user_id}.txt'
-        with open(file_name, 'w') as f:
-            json.dump(data, f)
+        await save_address(user_id, public_key)
+        await save_wallet_keys(user_id, data)
 
         return public_key
     except Exception as e:
         print(e)
 
 
-def load_wallet(user_id):
+async def load_wallet(user_id):
+    """loads wallet by using a keypair"""
     try:
-        file_name = f'users/{user_id}.txt'
-        with open(file_name) as json_file:
-            account = json.load(json_file)
-            account['secret_key'] = account['secret_key'].encode("latin-1")
-            return account
+        data = await load_wallet_keys(user_id)
+        account = json.loads(data[0])
+        account['secret_key'] = account['secret_key'].encode("latin-1")
+        return account
 
     except Exception as e:
         print(e)
         return None
 
 
-def fund_account(user_id, amount):
+async def fund_account(user_id, amount):
+    """SOL test faucet"""
     try:
         amount = int(1000000000 * amount)
-        account = load_wallet(user_id)
+        account = await load_wallet(user_id)
         resp = solana_client.request_airdrop(
             account['public_key'], amount)
 
@@ -65,9 +63,10 @@ def fund_account(user_id, amount):
         return None
 
 
-def get_balance(user_id):
+async def get_balance(user_id):
+    """load balance from blockchain"""
     try:
-        account = load_wallet(user_id)
+        account = await load_wallet(user_id)
         resp = solana_client.get_balance(account['public_key'])
         balance = resp['result']['value'] / 1000000000
         data = {
@@ -80,9 +79,10 @@ def get_balance(user_id):
         return None
 
 
-def send_sol(user_id, amount, receiver):
+async def send_sol(user_id, amount, receiver):
+    """sends funds to someone"""
     try:
-        account = load_wallet(user_id)
+        account = await load_wallet(user_id)
         sender = Keypair.from_secret_key(account['secret_key'])
         amount = int(1000000000 * amount)
         txn = Transaction().add(transfer(TransferParams(

@@ -11,11 +11,11 @@ from keyboard import go_to_wallet, create_button, menu, receive_menu, send_menu
 async def message_create_wallet(call: types.CallbackQuery):
     """creates a wallet for a new user"""
     try:
-        new_wallet = create_wallet(call.from_user.id)
+        new_wallet = await create_wallet(call.from_user.id)
         await call.message.edit_text(text=f'Кошелек создан, Ваш адрес: `{new_wallet}` ',
                                      parse_mode='MarkdownV2',
                                      reply_markup=go_to_wallet())
-        add_user(call.from_user.id)
+        await add_user(call.from_user.id)
         await call.answer()
     except Exception as e:
         print(e)
@@ -24,11 +24,11 @@ async def message_create_wallet(call: types.CallbackQuery):
 async def wallet(call: types.CallbackQuery):
     """launch a wallet, but from a call"""
     try:
-        if user_check(call.from_user.id) is False:
+        if await user_check(call.from_user.id) is False:
             await call.message.answer('У вас еще нет активного кошелька. Нажмите на кнопку, чтобы создать',
                                       reply_markup=create_button())
         else:
-            data = get_balance(call.from_user.id)
+            data = await get_balance(call.from_user.id)
             public_key = data['publicKey']
             balance = data['balance']
             try:
@@ -45,7 +45,7 @@ async def wallet(call: types.CallbackQuery):
 async def receive(call: types.CallbackQuery):
     """RECEIVE menu handler"""
     try:
-        data = get_balance(call.from_user.id)
+        data = await get_balance(call.from_user.id)
         address = data['publicKey']
         text = "Чтобы отправитель мог отправить вам средства, ему необходимо знать адрес вашего кошелька\.\n\n"
         text += "*Внимание\!* Отправляйте на этот адрес *только SOL сеть SPL*, иначе Вы *потеряете* Ваши средства\!⚠\n\n"
@@ -68,7 +68,7 @@ async def receive(call: types.CallbackQuery):
 async def create_qrcode(call: types.CallbackQuery):
     """creates qrcode of user`s address"""
     await call.message.delete()
-    data = get_balance(call.from_user.id)
+    data = await get_balance(call.from_user.id)
     address = data['publicKey']
     qrcode_path = make_qrcode(call, address)
     photo = InputFile(qrcode_path)
@@ -101,7 +101,7 @@ async def wallet_reload(call: types.CallbackQuery):
 
 async def faucet(call: types.CallbackQuery):
     """FAUCET for test server"""
-    fund_account(call.from_user.id, amount=2)
+    await fund_account(call.from_user.id, amount=2)
     await call.message.edit_text(text="Тестовые токены отправлены!\n/wallet - кошелек")
     await call.answer()
 
@@ -109,13 +109,16 @@ async def faucet(call: types.CallbackQuery):
 async def show_history(call: types.CallbackQuery):
     """shows last 5 sent transactions"""
     try:
-        data = get_history(call.from_user.id)
+        data = await get_history(call.from_user.id)
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(types.InlineKeyboardButton(text='Вернуться к кошельку',
                                                 callback_data=cb_menu.new(action='wallet')))
         text = '*Последние 5 отправленных Вами транзакций*\n'
         for item in data:
-            text += '\n*Получатель:* ' + '`' + '@'+ item[0] + '`'
+            if len(item[0]) > 15:
+                text += '\n*Получатель:* ' + '`' + item[0] + '`'
+            else:
+                text += '\n*Получатель:* ' + '`' + 'Telegram user: @' + item[0] + '`'
             text += '\n*Количество:* ' + str(item[1]) + ' SOL'
             text += '\n*ID транзакции:* ' + '`' + item[2] + '`'
             text += '\n\n '
@@ -125,8 +128,6 @@ async def show_history(call: types.CallbackQuery):
         await call.answer()
     except Exception as e:
         print(e)
-
-
 
 
 def register_callbacks(dp: Dispatcher):

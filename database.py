@@ -1,6 +1,7 @@
 import config
-import asyncio
 from DBcm import UseDatabase
+
+import json
 
 dbname = config.DATABASE_NAME
 
@@ -13,16 +14,16 @@ async def create_tables():
         );
         """
         await cursor.execute(_SQL)
-        
-        _SQL="""CREATE TABLE IF NOT EXISTS addresses(
+
+        _SQL = """CREATE TABLE IF NOT EXISTS addresses(
         user_id INTEGER,
         address TEXT,
         FOREIGN KEY (user_id) REFERENCES users(user_id)
         );
         """
         await cursor.execute(_SQL)
-        
-        _SQL="""CREATE TABLE IF NOT EXISTS history(
+
+        _SQL = """CREATE TABLE IF NOT EXISTS history(
         user_id INTEGER,
         address TEXT,
         amount FLOAT,
@@ -32,34 +33,33 @@ async def create_tables():
         );        
         """
         await cursor.execute(_SQL)
-        
+
         _SQL = """CREATE TABLE IF NOT EXISTS wallets(
         user_id INTEGER,
-        public TEXT,
-        secret BLOB,
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
-        FOREIGN KEY (public) REFERENCES addresses(address)
+        data json,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
         );
         """
         await cursor.execute(_SQL)
 
-async def save_wallet_keys(user_id, public, secret):
+
+async def save_wallet_keys(user_id, data):
     """saves access keys"""
     async with UseDatabase(dbname) as cursor:
-        _SQL = """INSERT INTO wallets (user_id, public, secret)
-        VALUES(?, ?, ?);"""
-        await cursor.execute(_SQL, (user_id, public, secret))
-        
-        
+        _SQL = """INSERT INTO wallets
+        VALUES(?, ?);"""
+        await cursor.execute(_SQL, (user_id, json.dumps(data)))
+
+
 async def load_wallet_keys(user_id):
     """load a wallet by using a secret key"""
     async with UseDatabase(dbname) as cursor:
-        _SQL = """SELECT secret FROM wallets 
+        _SQL = """SELECT data FROM wallets 
         WHERE user_id =?; """
         await cursor.execute(_SQL, (user_id,))
         res = await cursor.fetchone()
         return res
-              
+
 
 async def user_check(user_id):
     """checks is ID is in a DB"""
@@ -72,12 +72,13 @@ async def user_check(user_id):
         else:
             return True
 
+
 async def add_user(user_id):
     """adds user to DB"""
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO users (user_id)
         VAlUES (?);"""
-        await cursor.execute(_SQL, (user_id,)) 
+        await cursor.execute(_SQL, (user_id,))
 
 
 async def save_history(user_id, address, amount, transaction, date):
@@ -99,6 +100,7 @@ async def get_history(user_id):
         content = await cursor.fetchmany(5)
         return content
 
+
 async def save_address(user_id, address):
     """saves user`s wallet`s address"""
     async with UseDatabase(dbname) as cursor:
@@ -106,7 +108,7 @@ async def save_address(user_id, address):
         VALUES(?, ?);"""
         await cursor.execute(_SQL, (user_id, address))
 
-        
+
 async def select_address(user_id):
     """loads user`s address"""
     async with UseDatabase(dbname) as cursor:
@@ -115,4 +117,3 @@ async def select_address(user_id):
         await cursor.execute(_SQL, (user_id,))
         res = await cursor.fetchone()
         return res
-        
