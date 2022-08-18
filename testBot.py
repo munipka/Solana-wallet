@@ -12,6 +12,7 @@ from webApp.web_app import routes as webapp_routes
 from webApp.web_app import setup_template_routes
 
 import config
+from database import create_tables
 
 bot = Bot(token=config.BOT_TOKEN)
 
@@ -24,7 +25,7 @@ async def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
-
+    create_tables() #creates tables in DB
     register_commands(dp)
     register_callbacks(dp)
     register_state_callbacks(dp)
