@@ -1,11 +1,11 @@
 from aiogram import types, Dispatcher
 from aiogram.types import InputFile
 
-from common import cb_menu
-from database import user_check, add_user, get_history
-from qrcodes import make_qrcode
-from wallet import get_balance, fund_account, create_wallet
-from keyboard import go_to_wallet, create_button, menu, receive_menu, send_menu
+from apps.common import cb_menu
+from apps.database import user_check, add_user, get_history
+from apps.qrcodes import make_qrcode
+from apps.wallet import get_balance, fund_account, create_wallet
+from apps.keyboard import go_to_wallet, create_button, menu, receive_menu, send_menu
 
 
 async def message_create_wallet(call: types.CallbackQuery):

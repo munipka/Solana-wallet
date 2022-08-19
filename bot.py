@@ -8,7 +8,7 @@ from handlers.callbacks import register_callbacks
 from handlers.SendRegister import register_state_callbacks
 
 import config
-from database import create_tables
+from apps.database import create_tables
 
 bot = Bot(token=config.BOT_TOKEN)
 
