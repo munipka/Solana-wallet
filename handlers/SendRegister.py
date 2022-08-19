@@ -4,11 +4,11 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from common import cb_menu
-from database import save_history
-from qrcodes import decode_qrcode
-from wallet import get_balance, send_sol
-from keyboard import cancel_button
+from apps.common import cb_menu
+from apps.database import save_history
+from apps.qrcodes import decode_qrcode
+from apps.wallet import get_balance, send_sol
+from apps.keyboard import cancel_button
 
 
 class SetReceiver(StatesGroup):
