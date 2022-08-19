@@ -13,6 +13,8 @@ async def notifications(bot):
             text = 'На Ваш кошелек поступило ' + str(float(new_balance['balance'])-float(old_balance[0][0])) + ' SOL'
             await bot.send_message(chat_id=int(user[0]), text=text)
             await update_balance_db((int(user[0])), float(new_balance['balance']))
+        else:
+            await update_balance_db((int(user[0])), float(new_balance['balance']))
     await asyncio.sleep(30)
     await notifications(bot)
 
