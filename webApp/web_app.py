@@ -2,8 +2,8 @@ from aiogram import Bot, types
 from aiohttp import web
 from aiohttp.web_fileresponse import FileResponse
 
-from wallet import get_balance, send_sol
-from database import select_address, save_history
+from apps.wallet import get_balance, send_sol
+from apps.database import select_address, save_history
 
 import config
 from .utils import parse_init_data

@@ -16,7 +16,7 @@ from apps.notifications import notifications
 bot = Bot(token=config.BOT_TOKEN)
 
 
-async def m():
+async def bot_start():
     dp = Dispatcher(bot, storage=MemoryStorage())
     logging.basicConfig(
         level=logging.INFO,
@@ -28,17 +28,12 @@ async def m():
     register_state_callbacks(dp)
 
     await create_tables()  # creates tables in DB
-
     await dp.start_polling(bot)
 
 
-async def notf(bot):
-    await notifications(bot)
-
-
 async def main():
-    f1 = create_task(m())
-    f2 = create_task(notf(bot))
+    f1 = create_task(bot_start())
+    f2 = create_task(notifications(bot))
     await asyncio.wait([f1, f2])
 
 
