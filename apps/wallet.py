@@ -7,7 +7,7 @@ from solana.system_program import TransferParams, transfer
 from solana.transaction import Transaction
 
 import config
-from database import save_wallet_keys, save_address, load_wallet_keys
+from apps.database import save_wallet_keys, save_address, load_wallet_keys
 
 solana_client = Client(config.SOLANA_CLIENT)
 

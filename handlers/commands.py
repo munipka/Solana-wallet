@@ -1,8 +1,8 @@
 from aiogram import Dispatcher, types
 
-from database import user_check
-from keyboard import menu, create_button, faucet_button
-from wallet import get_balance
+from apps.database import user_check
+from apps.keyboard import menu, create_button, faucet_button
+from apps.wallet import get_balance
 
 
 async def cmd_start(message: types.Message):
@@ -38,10 +38,8 @@ async def faucet(message: types.Message):
                          reply_markup=faucet_button())
 
 
-
 def register_commands(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands=["start", 'help'])
     dp.register_message_handler(wallet, commands='wallet')
     dp.register_message_handler(faucet, commands='faucet')
     dp.register_message_handler(cmd_start, content_types=['text'])
-
