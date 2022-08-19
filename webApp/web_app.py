@@ -18,7 +18,7 @@ async def index(request):
 
 @routes.get("/balance")
 async def load_balance(request):
-    data = get_balance(request.query["user_id"])
+    data = await get_balance(request.query["user_id"])
     balance = data['balance']
     return web.Response(text=balance)
 
@@ -36,8 +36,8 @@ async def submit_order(request):
     receiver = init_data['receiver']['id']
     amount = float(data['amount'])
 
-    address = select_address(receiver)
-    transaction = send_sol(sender, amount, address[0])
+    address = await select_address(receiver)
+    transaction = await send_sol(sender, amount, address[0])
 
     async def send_notification_to_receiver(init_data, amount):
         if 'username' in init_data['user']:
