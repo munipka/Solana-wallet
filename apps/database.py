@@ -1,3 +1,5 @@
+import asyncio
+
 import config
 from apps.DBcm import UseDatabase
 
@@ -42,6 +44,14 @@ async def create_tables():
         """
         await cursor.execute(_SQL)
 
+        _SQL = """CREATE TABLE IF NOT EXISTS balances(
+                user_id INTEGER,
+                balance FLOAT DEFAULT 0.0,
+                FOREIGN KEY (user_id) REFERENCES users(user_id)
+                );
+                """
+        await cursor.execute(_SQL)
+
 
 async def save_wallet_keys(user_id, data):
     """saves access keys"""
@@ -78,6 +88,9 @@ async def add_user(user_id):
     async with UseDatabase(dbname) as cursor:
         _SQL = """INSERT INTO users (user_id)
         VAlUES (?);"""
+        await cursor.execute(_SQL, (user_id,))
+        _SQL = """INSERT INTO balances (user_id)
+                VAlUES (?);"""
         await cursor.execute(_SQL, (user_id,))
 
 
@@ -116,4 +129,32 @@ async def select_address(user_id):
         WHERE user_id=?;"""
         await cursor.execute(_SQL, (user_id,))
         res = await cursor.fetchone()
+        return res
+
+
+async def get_users_list():
+    """loads list of users"""
+    async with UseDatabase(dbname) as cursor:
+        _SQL = """SELECT user_id FROM users;"""
+        await cursor.execute(_SQL)
+        res = await cursor.fetchall()
+        return res
+
+
+async def update_balance_db(user_id, balance):
+    """saves balance in DB"""
+    async with UseDatabase(dbname) as cursor:
+        _SQL = """UPDATE balances
+        SET (balance)=?
+        WHERE user_id=?;"""
+        await cursor.execute(_SQL, (balance, user_id))
+
+
+async def load_balance_db(user_id):
+    """loads balance from DB"""
+    async with UseDatabase(dbname) as cursor:
+        _SQL = """SELECT balance FROM balances
+        WHERE user_id=?"""
+        await cursor.execute(_SQL, (user_id,))
+        res = await cursor.fetchall()
         return res
