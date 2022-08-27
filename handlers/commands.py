@@ -8,7 +8,8 @@ from apps.wallet import get_balance
 async def cmd_start(message: types.Message):
     """welcome message handler"""
     hello_msg = 'Привет!\nСписок команд для бота:\n'
-    hello_msg += 'Это тестовый бот, блабла'
+    hello_msg += '/wallet - запускает панель управления кошельком\n'
+    hello_msg += '/faucet - кран на солану в тестовой сети'
     await message.answer(text=hello_msg)
 
 
