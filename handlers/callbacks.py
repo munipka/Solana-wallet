@@ -9,7 +9,7 @@ from apps.keyboard import go_to_wallet, create_button, menu, receive_menu, send_
 
 
 async def message_create_wallet(call: types.CallbackQuery):
-    """creates a wallet for a new user"""
+    """Callback handler that creates a wallet for a new user"""
     try:
         new_wallet = await create_wallet(call.from_user.id)
         await call.message.edit_text(text=f'Кошелек создан, Ваш адрес: `{new_wallet}` ',
@@ -22,7 +22,7 @@ async def message_create_wallet(call: types.CallbackQuery):
 
 
 async def wallet(call: types.CallbackQuery):
-    """launch a wallet, but from a call"""
+    """Handler that launches a wallet, but from a call"""
     try:
         if await user_check(call.from_user.id) is False:
             await call.message.answer('У вас еще нет активного кошелька. Нажмите на кнопку, чтобы создать',
@@ -43,7 +43,7 @@ async def wallet(call: types.CallbackQuery):
 
 
 async def receive(call: types.CallbackQuery):
-    """RECEIVE menu handler"""
+    """RECEIVE menu callback handler"""
     try:
         data = await get_balance(call.from_user.id)
         address = data['publicKey']
@@ -66,7 +66,7 @@ async def receive(call: types.CallbackQuery):
 
 
 async def create_qrcode(call: types.CallbackQuery):
-    """creates qrcode of user`s address"""
+    """Callback handler that creates qrcode of user`s address"""
     await call.message.delete()
     data = await get_balance(call.from_user.id)
     address = data['publicKey']
@@ -79,7 +79,7 @@ async def create_qrcode(call: types.CallbackQuery):
 
 
 async def send(call: types.CallbackQuery):
-    """SEND menu handler"""
+    """SEND menu callback handler"""
     try:
         text = 'Чтобы отправить средства, Вам нужно будет ввести или прислать QR\-код адреса получателя *SOL* в сети *SPL*,'
         text += ' а также сумму перевода\. \n'
@@ -93,21 +93,21 @@ async def send(call: types.CallbackQuery):
 
 
 async def wallet_reload(call: types.CallbackQuery):
-    """reload the wallet"""
+    """reload the wallet callback handler"""
     await call.message.delete()
     await wallet(call)
     await call.answer()
 
 
 async def faucet(call: types.CallbackQuery):
-    """FAUCET for test server"""
+    """FAUCET for test server callback handler"""
     await fund_account(call.from_user.id, amount=2)
     await call.message.edit_text(text="Тестовые токены отправлены!\n/wallet - кошелек")
     await call.answer()
 
 
 async def show_history(call: types.CallbackQuery):
-    """shows last 5 sent transactions"""
+    """Callback handler that shows last 5 sent transactions"""
     try:
         data = await get_history(call.from_user.id)
         keyboard = types.InlineKeyboardMarkup()

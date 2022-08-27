@@ -3,15 +3,15 @@ const receiptFurtherButton = document.querySelector('.receipt__further');
 
 Telegram.WebApp.ready()
 configureThemeColor(Telegram.WebApp.colorScheme);
-configureMainButton({text: 'next', color: '#008000', onclick: mainButtonClickListener});
+configureMainButton({text: 'Далее', color: '#008000', onclick: mainButtonClickListener});
 Telegram.WebApp.MainButton.show();
 
 
 function mainButtonClickListener() {
-    if (Telegram.WebApp.MainButton.text.toLowerCase() === 'next') {
-        configureMainButton({text: 'back', color: '#FF0000', onclick: mainButtonClickListener});
+    if (Telegram.WebApp.MainButton.text.toLowerCase() === 'Далее') {
+        configureMainButton({text: 'Назад', color: '#FF0000', onclick: mainButtonClickListener});
     } else {
-        configureMainButton({text: 'next', color: '#008000', onclick: mainButtonClickListener});
+        configureMainButton({text: 'Далее', color: '#008000', onclick: mainButtonClickListener});
     }
     receipt.classList.toggle('active');
 }

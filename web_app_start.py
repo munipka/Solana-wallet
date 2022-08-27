@@ -18,4 +18,4 @@ async def webapp():
 
 
 if __name__ == "__main__":
-    aiohttp.web.run_app(webapp(), port=8001, host="65.108.147.234")
+    aiohttp.web.run_app(webapp(), port=config.WEB_PORT, host=config.WEB_HOST)
